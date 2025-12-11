@@ -1,0 +1,68 @@
+import random
+import webcolors
+
+
+def roll_stat():
+    """Roll 3d6 and return the sum."""
+    return sum(random.randint(1, 6) for _ in range(3))
+
+def set_modifier(score):
+    return (score - 10)//2
+
+class Player:
+    STATS = ["strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma"]
+    MIN_MOD = -2
+    MAX_MOD = 5
+
+    def __init__(self, name, color, clr_txt=None):
+        self.name = name
+        self.fav_color = color
+        if clr_txt is None:
+            try:
+                self.fav_color_text = webcolors.hex_to_name(self.fav_color)
+            except ValueError:
+                if self.fav_color.startswith("#"):
+                    self.fav_color_text = self.fav_color
+                else:
+                    self.fav_color_text = "#" + self.fav_color
+        else:
+            self.fav_color_text = clr_txt
+        self.strength = float("inf")
+        self.dexterity = float("inf")
+        self.constitution = float("inf")
+        self.intelligence = float("inf")
+        self.wisdom = float("inf")
+        self.charisma = float("inf")
+        self.set_stats()
+    def roll_stats(self):
+        while True:
+            score = roll_stat()
+            modifier = set_modifier(score)
+            if self.MIN_MOD <= modifier <= self.MAX_MOD:
+                return modifier
+    def set_stat(self, stat_name, value=None):
+        if stat_name in self.STATS:
+            if value is None:
+                setattr(self, stat_name, self.roll_stats())
+            else:
+                setattr(self, stat_name, value)
+        else:
+            raise ValueError(f'"{stat_name}" is not a valid stat')
+    def __str__(self):
+        return (f"{self.name}'s favorite color is {self.fav_color_text} and has the following stat modifiers:\nStrength:{self.strength}"
+                f"\nDexterity:{self.dexterity}\nConstitution:{self.constitution}"
+                f"\nIntelligence:{self.intelligence}\nWisdom:{self.wisdom}\nCharisma:{self.charisma}")
+
+    def set_stats(self):
+        for stat in self.STATS:
+            self.set_stat(stat)
+
+    def __repr__(self):
+        return (f"Player Name:{self.name}\nPlayer Favorite Color:{self.fav_color_text}\n"
+                f"Player Favorite Color Hex:{self.fav_color}\nPlayer Stats:\n\n"
+                f"Strength:{self.strength}\n"
+                f"Dexterity:{self.dexterity}\n"
+                f"Constitution:{self.constitution}\n"
+                f"Intelligence:{self.intelligence}\n"
+                f"Wisdom:{self.wisdom}\n"
+                f"Charisma:{self.charisma}")
