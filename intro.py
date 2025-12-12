@@ -28,14 +28,16 @@ def intro(player):
             continue
 
         action, target = get_action_target(choice)
-
+        current_location = "door"
         match action:
             case "look" | "examine" | "l":
-                handle_look(player, target)
+                handle_look(player, target, current_location)
             case "go" | "move" | "walk":
-                handle_move(player, target)
+                handle_move(player, target, current_location)
+                if "bar" in target or "bartender" in target:
+                    current_location = "bar"
             case "talk" | "speak":
-                handle_talk(player, target)
+                handle_talk(player, target, current_location)
             case "help" | "?":
                 show_help()
             case "quit" | "exit" | "q":
@@ -43,23 +45,36 @@ def intro(player):
             case _:
                 print (f"{action} isn't valid here.  Type 'help' for commands")
 
-def handle_look(player, target):
+def handle_look(player, target, current_location):
     result = player.roll_check("wisdom")
+
     if result > 5:
         print("\nThe air smells of stale alcohol and body odor.")
-    if result > 10 and ("bar" in target or "bartender" in target):
-        print("The bar is long, wooden, covered in grime.  Behind it stands an orcish woman"
+    if "bar" in target or "bartender" in target:
+        if result > 10:
+            print("The bar is long, wooden, covered in grime.  Behind it stands an orcish woman"
                       " with long black hair and scowl.  She won't meet your eyes.  There is a short "
                       "menu claiming they serve ale, wine and spirits.  They do not have a kitchen.")
-    if result > 15 and ("bar" in target or "bartender" in target):
+        if result > 15:
             print("The bartender is casting dark looks at a table in the far corner where a "
                       "human woman sits nursing a drink in a pewter mug.  She cringes every time "
                       "the table to her left gets loud.")
     elif result > 15:
         print("You notice the bartender casting dark looks at a corner table.")
-    elif "bar" not in target and "bartender" not in target:
-        print("You see:\n"
-              "- A long bar in the back\n"
-              "- Stairs blocked by a rope\n"
-              "- Several occupied tables\n"
-              "- An archway to a storage room\n")
+
+    print("You see:\n"
+          "- A long bar in the back\n"
+          "- Stairs blocked by a rope\n"
+          "- Several occupied tables\n"
+          "- An archway to a storage room\n")
+    return
+def handle_move(player, target, current_location):
+    if "bar" in target or "bartender" in target:
+        print("You step up to the bar.  The orc bartender sneers at you. There is a very drunk dwarf"
+              "sitting unsteadily on a stool in front of her.")
+    return
+
+def handle_talk(player, target, current_location):
+    if current_location == "bar":
+        if "bartender" in target:
+            print("What d'ya want?  We got what's on the sign.  And nothin' else.")
