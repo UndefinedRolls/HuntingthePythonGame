@@ -29,7 +29,7 @@ def create_character():
         sys.exit()
 
     new_player = character.Player(char_name, char_color, clr_txt)
-    print(new_player)
+    print(repr(new_player))
     return new_player
 def menu(save_data):
     if save_data:
