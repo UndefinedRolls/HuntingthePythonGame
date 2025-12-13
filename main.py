@@ -66,6 +66,7 @@ def main(save_data=None):
         case "1":
             print("Create your character")
             player = create_character()
+            intro.intro(player)
         case "2":
             if save_data:
                 pass
