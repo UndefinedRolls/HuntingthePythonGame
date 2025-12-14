@@ -1,3 +1,5 @@
+import npc
+import character
 def get_action_target(text):
     temp = text.lower().strip().split()
     if not temp:
@@ -14,10 +16,10 @@ def get_action_target(text):
 def intro(player):
     print("You stand in the doorway of a ramshackle tavern in a ramshackle town.  The room is "
     "mostly dark, but motes of dust float on a few bars of light that comes in from the grimy windows."
-    "  There is a long bar in the back of the room, stairs up to the proprietors rooms blocks by "
+    "  There is a long bar in the back of the room, stairs up to the proprietors rooms blocked by"
           " a rope, a handful of occupied tables, and an open archway that leads to a storage room "
           "in the back.")
-
+    bartender = npc.Bartender("Myev", 1, 3)
     while True:
         print("What do you do?")
         choice = input(">>").strip()
@@ -37,9 +39,10 @@ def intro(player):
                 if "bar" in target or "bartender" in target:
                     current_location = "bar"
             case "talk" | "speak":
-                handle_talk(player, target, current_location)
+                if "bartender" in target or "Myev" in target:
+                    handle_talk(player, target, current_location, bartender)
             case "help" | "?":
-                show_help()
+                pass
             case "quit" | "exit" | "q":
                 return "quit"
             case _:
@@ -74,7 +77,5 @@ def handle_move(player, target, current_location):
               "sitting unsteadily on a stool in front of her.")
     return
 
-def handle_talk(player, target, current_location):
-    if current_location == "bar":
-        if "bartender" in target:
-            print("What d'ya want?  We got what's on the sign.  And nothin' else.")
+def handle_talk(player, target, current_location, subject):
+    subject.talk(target, player)

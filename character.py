@@ -34,6 +34,8 @@ class Player:
         self.wisdom = float("inf")
         self.charisma = float("inf")
         self.set_stats()
+        self.stats = {"strength": self.strength, "dexterity": self.dexterity, "constitution": self.constitution,
+                      "intelligence": self.intelligence, "wisdom": self.wisdom, "charisma": self.charisma}
     def roll_stats(self):
         while True:
             score = roll_stat()
@@ -66,3 +68,5 @@ class Player:
                 f"Intelligence:{self.intelligence}\n"
                 f"Wisdom:{self.wisdom}\n"
                 f"Charisma:{self.charisma}")
+    def roll_check(self, stat):
+        return random.randint(1, 20)+self.stats[stat]
