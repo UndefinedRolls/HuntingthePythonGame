@@ -1,5 +1,6 @@
 import npc
-import character
+import game_state
+
 def get_action_target(text):
     temp = text.lower().strip().split()
     if not temp:
@@ -13,13 +14,14 @@ def get_action_target(text):
         target = temp[1]
     return action, target
 
-def intro(player):
+def intro(player, state):
     print("You stand in the doorway of a ramshackle tavern in a ramshackle town.  The room is "
     "mostly dark, but motes of dust float on a few bars of light that comes in from the grimy windows."
     "  There is a long bar in the back of the room, stairs up to the proprietors rooms blocked by"
           " a rope, a handful of occupied tables, and an open archway that leads to a storage room "
           "in the back.")
     bartender = npc.Bartender("Myev", 1, 3)
+
     while True:
         print("What do you do?")
         choice = input(">>").strip()
@@ -30,17 +32,18 @@ def intro(player):
             continue
 
         action, target = get_action_target(choice)
-        current_location = "door"
+        if not state.current_location:
+            state.current_location = "door"
         match action:
             case "look" | "examine" | "l":
-                handle_look(player, target, current_location)
+                handle_look(player, target, state.current_location)
             case "go" | "move" | "walk":
-                handle_move(player, target, current_location)
+                handle_move(player, target, state.current_location)
                 if "bar" in target or "bartender" in target:
-                    current_location = "bar"
+                    state.current_location = "bar"
             case "talk" | "speak":
                 if "bartender" in target or "Myev" in target:
-                    handle_talk(player, target, current_location, bartender)
+                    handle_talk(player, target, state.current_location, bartender)
             case "help" | "?":
                 pass
             case "quit" | "exit" | "q":
@@ -48,7 +51,7 @@ def intro(player):
             case _:
                 print (f"{action} isn't valid here.  Type 'help' for commands")
 
-def handle_look(player, target, current_location):
+def handle_look(player, target, state):
     result = player.roll_check("wisdom")
 
     if result > 5:

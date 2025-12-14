@@ -1,10 +1,10 @@
-import character
-import webcolors
 import sys
 import intro
 from game_state import GameState
 from datetime import datetime
 import json
+from character import Player
+import webcolors
 
 def save_game(player, game_state, filename="save.json"):
     save_data = {
@@ -49,7 +49,7 @@ def create_character():
         print("Before you're quest even begins, it ends.")
         sys.exit()
 
-    new_player = character.Player(char_name, char_color, clr_txt)
+    new_player = Player(char_name, char_color, clr_txt)
     print(repr(new_player))
     return new_player
 def menu(save_data):
@@ -87,12 +87,11 @@ def main(save_data=None):
         case "1":
             print("Create your character")
             player = create_character()
-            intro.intro(player)
             game_state = GameState(player)
-
+            intro.intro(player, game_state)
         case "2":
             if save_data:
-                player, game_state = load_game()add
+                player, game_state = load_game()
             else:
                 pass
         case "3":
