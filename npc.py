@@ -1,7 +1,8 @@
 class NPC:
     def __init__(self, name="Civilian", pronouns=0):
         self.name = name
-        match pronouns:
+        self.pronouns = pronouns
+        match self.pronouns:
             case 0:
                 self.subject = "HE"
                 self.object = "HIM"
@@ -21,6 +22,17 @@ class NPC:
     def talk(self, target, player):
         pass
         #defined in subclass
+    def save_game(self):
+        return {
+            "name": self.name,
+            "pronouns": self.pronouns,
+        }
+    @classmethod
+    def load_game(cls, save_data):
+        return cls(
+            name=save_data["name"],
+            pronouns=save_data["pronouns"],
+        )
 
 class Bartender(NPC):
     def __init__(self, name="John",  pronouns=0, personality = 0):
@@ -49,7 +61,27 @@ class Bartender(NPC):
 
     def talk(self, target, player):
         responses = self.responses[self.state]
-        if responses is None and self.state == "introduction":
+        if responses[0] is None and self.state == "introduction":
             print(responses[1][self.personality])
         elif target in responses[0]:
             print(responses[1][self.personality])
+
+    def save_game(self):
+        return {
+            "name": self.name,
+            "pronouns": self.pronouns,
+            "personality": self.personality,
+            "conversation_state": self.state,
+            "topics": self.topics,
+        }
+
+    @classmethod
+    def load_game(cls, save_data):
+        bartender = cls(
+            name=save_data["name"],
+            pronouns=save_data["pronouns"],
+            personality=save_data["personality"],
+        )
+        bartender.topics = save_data["topics"]
+        bartender.state = save_data["conversation_state"]
+        return bartender

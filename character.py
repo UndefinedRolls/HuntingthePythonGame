@@ -70,3 +70,20 @@ class Player:
                 f"Charisma:{self.charisma}")
     def roll_check(self, stat):
         return random.randint(1, 20)+self.stats[stat]
+
+    def save_game(self):
+        return {
+            "name": self.name,
+            "stats": self.stats,
+            "favorite_color": self.fav_color,
+            "favorite_color_text": self.fav_color_text,
+        }
+    @classmethod
+    def load_game(cls, save_data):
+        player = cls(
+            name=save_data["name"],
+            color=save_data["favorite_color"],
+            clr_txt=save_data["favorite_color_text"]
+        )
+        player.stats = save_data["stats"]
+        return player

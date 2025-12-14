@@ -2,6 +2,27 @@ import character
 import webcolors
 import sys
 import intro
+from game_state import GameState
+from datetime import datetime
+import json
+
+def save_game(player, game_state, filename="save.json"):
+    save_data = {
+        "version": "0.1",
+        "timestamp": datetime.now().isoformat(),
+        "player": player.save_game(),
+        "game_state": game_state.save_game(),
+    }
+    with open(filename, "w") as f:
+        json.dump(save_data, f, indent=4)
+
+def load_game(filename="save.json"):
+    with open(filename, "r") as f:
+        data = json.load(f)
+
+    player = Player.load_game(data["player"])
+    game_state = GameState.load_game(data["game_state"])
+    return player, game_state
 
 def parse_color(color):
     color = color.replace(" ", "").lower()
@@ -67,9 +88,11 @@ def main(save_data=None):
             print("Create your character")
             player = create_character()
             intro.intro(player)
+            game_state = GameState(player)
+
         case "2":
             if save_data:
-                pass
+                player, game_state = load_game()add
             else:
                 pass
         case "3":
