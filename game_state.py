@@ -1,13 +1,14 @@
 import npc
 class GameState:
     def __init__(self):
-        self.current_location = "tavern"
-        self.sub_location = "door"
+        self.current_location = None
         self.player = None
         self.flags = set()
         self.inventory = []
         self.npcs_met = {}
 
+    def set_player(self, player):
+        self.player = player
     def set_flag(self, flag_name):
         self.flags.add(flag_name)
 
@@ -38,3 +39,6 @@ class GameState:
             name: npc.load_game(npc_data)
             for name, npc_data in save_data["npcs"].items()
         }
+
+    def move_to(self, location):
+        self.current_location = location

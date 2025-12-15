@@ -9,6 +9,21 @@ def roll_stat():
 def set_modifier(score):
     return (score - 10)//2
 
+
+def get_action_target(text):
+    temp = text.lower().strip().split()
+    if not temp:
+        return None, None
+    action = temp[0]
+    if len(temp) == 1:
+        target = None
+    elif len(temp) > 2:
+        target = " ".join(temp[1:])
+    else:
+        target = temp[1]
+    return action, target
+
+
 class Player:
     STATS = ["strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma"]
     MIN_MOD = -2
@@ -87,3 +102,25 @@ class Player:
         )
         player.stats = save_data["stats"]
         return player
+
+    def find_action(self, action = None, target =None):
+        print("What do you do?")
+        choice = input(">>").strip()
+        if not choice:
+            print("You stand and stare blankly into the room.")
+            #action, target = self.find_action(self, action, target)
+        else:
+            return get_action_target(choice)
+        return action, target
+
+    def handle_look(self, description):
+        result = self.roll_check("wisdom")
+        descriptions = description.split("|")
+        checks = result//5
+        if checks < len(descriptions):
+            checks = len(descriptions)
+        for i in range(checks):
+            print(descriptions[i])
+
+
+        return

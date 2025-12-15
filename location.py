@@ -3,23 +3,20 @@ class Location:
         self.name = name
         self.description = description
         self.exits = exits
-
-    def move_to(self, game):
-        game.current_location = self
-    def describe(self):
-        print(self.description)
-    def go_to(self, location, game):
-        location.move_to(game)
+        self.action = []
+        self.npc = []
+        self.can_look_at = []
     def describe_exits(self):
-        print(f"From {self.name} you can see:")
-        for exit, _ in self.exits.items():
-            print(f"- {exit}")
+        if self.exits:
+            print(f"\nFrom {self.name} you can see: {'\n'.join(self.exits)}")
+        else:
+            print(
+                "\nThere are no obvious exits"
+            )
 
-class Bar(Location):
-    def __init__(self, name, description, exits):
-        super().__init__(name, description, exits)
-        self.actions = {}
-        self.npc = {}
 
     def add_npc(self, npc):
         self.npc[npc.name] = npc
+
+    def describe(self):
+        print(f"\n{self.description}")

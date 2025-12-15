@@ -87,7 +87,8 @@ def main(save_data=None):
         case "1":
             print("Create your character")
             player = create_character()
-            game_state = GameState(player)
+            game_state = GameState()
+            game_state.player = player
             intro.intro(player, game_state)
         case "2":
             if save_data:
