@@ -1,11 +1,11 @@
 class Location:
-    def __init__(self, name, description, exits):
+    def __init__(self, name, description, exits, look_at, npcs=[]):
         self.name = name
         self.description = description
         self.exits = exits
         self.action = []
-        self.npc = []
-        self.can_look_at = []
+        self.npc = npcs
+        self.can_look_at = look_at
     def describe_exits(self):
         if self.exits:
             print(f"\nFrom {self.name} you can see: {'\n'.join(self.exits)}")

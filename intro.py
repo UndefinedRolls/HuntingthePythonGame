@@ -1,48 +1,94 @@
+from pip._internal import locations
+
 import npc
 import game_state
 import location
 
 def intro(player, state):
-    look_descriptions = {
-        'bar': "\nThe air smells of stale alcohol and body odor.|\nThe bar is long, wooden, covered in grime."
-               "\nBehind it stands an orcish woman with long black hair and scowl.  She won't meet your eyes."
-               "\nThere is a short menu claiming they serve ale, wine and spirits.  They do not have a kitchen.|"
-               "\nThe bartender is casting dark looks at a table in the far corner where a human woman sits nursing a drink in a pewter mug."
-               "\nThe woman cringes every time  the table to her left gets loud.",
-        'tavern': "\nThe dark main room of tavern is dirty.You hope that the stains on the floor are alcohol, but the color is that of "
+    tavern_descriptions = {
+        'bar': "\nThe bar is long, wooden, covered in grime.|"
+               "\nThere is a gnome leaning over the bar, perched on a barstool raised for his height.  The orc bartender stands behind the bar cleaning a glass with a rag.|"
+               "\nThe rag is likely dirtier than the glass, though, so maybe its more that the bartender is cleaning the rag with the glass.",
+        'tavern': "\nThe air smells of stale alcohol and body odor.|\nThe dark main room of tavern is dirty.You hope that the stains on the floor are alcohol, but the color is that of "
                   "dried blood.\nThere is a long bar in the back with blocked stairs to its left and a storage room to its right. A handful of patrons"
                   "sit at the dirty tables.|"
-                  "\nA drunk gnome nurses a drink at the bar, a group of young wagon guards sit to the left of a pale woman dressed darkly in the corner.  "
-                  "The bartender looks less happy to be here than you do.|\nThe storage room in the back holds half open crates, straw spewing from them to"
-                  "litter the floor.  A sign on the rope blocking the stairs reads 'PRIVATE', though someone has carved a small 's' at the end.",
+                  "\nA staircase climbs into darkness on your right, and an open door shows a storage room to your left.",
         'storage': "\nThe storage room stands to your left, and the bars right.  It has some shelves and half opened crates spewing straw on the floor|"
-                   "\nThe room is illuminated by oil lamps, "}
+                   "\nThe room is illuminated by oil lamps|\nThe walls behind the lamps are stained black with creosote.",
+        'stairs': "\nThe stairway is dark, and blocked by a rope with a sign hanging from it.| The wooden sign attached to the road has 'PRIVATE' burned into it.|"
+                  "\nSomeone has carved a small 's' at the end of the word",
+        'tables': "A lone woman sits at a table in a far corner.  A group of young men sit to her left playing at cards, and a couple of old farmers are drinking ale and telling stories on the far side.|"
+                   "The old men smile at you as you look at them, their faces darked with long hours in the sun.  They're probably quite a bit younger than they look.|\nThe young men playing at cards"
+                  "are dressed like wagon guards, their side arms hung from holsters on the back of their chairs.  The one in blue is winning.|\nThe young woman is trying to keep herself in the shadows, her back to you.",
+        'old men': "\nYou'll need to get closer to see anything about the old men telling stories.",
+        'guards': "\nYou can't see much of the card game the men playing from here.",
+        'young woman': "\nWith her back to you, you can't tell anything about the woman.",
+        'other': "\nYou can't see that from here"}
+    bar_descriptions = {
+        'bar': "\nThe bar was once quite nice, but now is covered in a layer of alcohol, sweat and dirt that hides any of the beauty it might once have had|"
+               "\nA drunk gnome sits on one of the barstools designed for small-folk, nursing a drink.\nIt smells strongly of rye spirit.\nThough it pales"
+               "in comparison to the smell of the gnome's breath|The bartender scowls at you, cleaning a glass with a rag probably dirtier that the glass itself.|"
+               "\nShe keeps casting looks at a woman sitting at a table in the corner.",
+        'tavern': "\nAt you back is a dirty room, filled with less dirty patrons|\nThe door to the street outside has been propped open with an old stone.",
+        'storage': "\nThere is a storage room to your right, but you can't see inside from here.",
+        'stairs': "\nThere is a staircase to your left, but you can't see much of it from here.",
+        'tables': "\nThree of the half dozen tables in the room are filled.|A group of rowdy young guards are playing at cards.  The one in green in winning.|"
+                  "\nTwo old men are sharing stories and a drink on the other side of the room.|A young woman sits near the bar, her back to the door.  She casts furtive glances at the bartender.",
+        'old men': "\nThe old men give you a smile and raise a glass to you, you think they'd welcome your company.",
+        'guards': "\nThe guards are busy with their game, you think the one in red may be cheating.",
+        'young woman': "\nThe young woman won't meet your eyes.  From the amount of ale on the table, you think she's probably spilled more than she's drunk||\nShe seems terrified, and keeps looking at the"
+                       "bartender, as if for reassurance.",
+        'other': "\nYou can't see that from here."}
     tavern_door = location.Location("tavern", "You stand in the doorway of a ramshackle tavern in a ramshackle town."
                                             "\nThe room is mostly dark, but motes of dust float on a few bars of light that comes in from the grimy windows."
                                             "\nThere is a long bar in the back of the room, stairs up to the proprietors rooms blocked by"
                                             "a rope\n-a handful of occupied tables\n-an open archway that leads to a storage room "
-                                            "in the back.", ["bar", "storage room", "staircase", "tables"])
-    tavern_door.can_look_at = ['bar', 'tavern', 'storage', 'stairs', 'tables']
-    #bartender = npc.Bartender("Myev", 1, 3)
-    #bar = location.Location("bar", "You stand before a long, mahogany bar that likely hasn't seen a good clean in months, if not years."
-    #                          "\nThere is a drunk gnome sitting precariously on a stool to your left, and an orcish bartender "
-    #                          "\nwho gives you a glare but says nothing.", ["tavern door"])
+                                            "in the back.", ["bar", "storage room", "staircase", "tables"], tavern_descriptions)
+    bartender = npc.Bartender("Myev", 1, 2)
+    gnome = npc.NPC("Vorlin", 0)
+    bar = location.Location("bar", "You stand before a long, mahogany bar that likely hasn't seen a good clean in months, if not years."
+                              "\nThere is a drunk gnome sitting precariously on a stool to your left, and an orcish bartender "
+                              "\nwho gives you a glare but says nothing.", ["tavern door"], bar_descriptions, [bartender, gnome])
+    places_available = {'bar': bar, 'tavern': tavern_door}
     state.current_location = tavern_door
     while True:
-        tavern_door.describe()
+        state.current_location.describe()
         action, target = player.find_action()
         if not action:
             continue
 
-        if 'bar' in target and 'bar' in state.current_location.can_look_at:
-            target = look_descriptions['bar']
-        elif ('tavern' in target or 'room' in target) and 'tavern' in state.current_location.can_look_at:
-            target = look_descriptions['tavern']
+        if 'room' in target:
+            target = state.current_location.name
+        elif 'bar' in target:
+            target = 'bar'
+        elif 'tavern' in target:
+            target = 'tavern'
+        elif 'storage' in target:
+            target = 'storage'
+        elif 'stairs' in target:
+            target = 'stairs'
+        elif 'tables' in target:
+            target = 'tables'
+        elif 'guards' in target:
+            target = 'guards'
+        elif 'old men' in target:
+            target = 'old men'
+        elif 'young woman' in target:
+            target = 'young woman'
+        else:
+            target = 'other'
+
         match action:
             case "look" | "examine" | "l":
+
                 player.handle_look(target)
             case "go" | "move" | "walk":
-                pass
+                if target == state.current_location.name:
+                    print("You are already there")
+                elif target not in places_available:
+                    print("You can't reach there from here.")
+                else:
+                    state.move_to(places_available[target])
             case "talk" | "speak":
                 pass
             case "help" | "?":
