@@ -115,10 +115,13 @@ class Player:
 
     def handle_look(self, location):
         result = self.roll_check("wisdom")
-        descriptions = self.can_look_at[location].split("|")
+        descriptions = location.split("|")
         checks = result//5
         if checks < len(descriptions):
             checks = len(descriptions)
-        for i in range(checks):
-            print(descriptions[i])
+        if checks == 0:
+            print("You can't see anything interesting here.")
+        else:
+            for i in range(checks):
+                print(descriptions[i])
         return

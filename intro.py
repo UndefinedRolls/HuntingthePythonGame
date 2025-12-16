@@ -1,4 +1,4 @@
-import npc
+from npc import NPC
 import location
 
 def intro(player, state):
@@ -59,13 +59,50 @@ def intro(player, state):
         'storytellers': 'old men',
         'woman': 'young woman',
         'doorway': 'storage',
-        'the back': 'storage'
+        'the back': 'storage',
+        'bar': 'bar'
     }
-    bartender = npc.Bartender("Myev", 1, 2)
-    gnome = npc.NPC("Vorlin", 0)
+    bartender = NPC("Myev", 1, used_name = "Bartender", custom_greeting="What?")
+    bartender.personality = "gruff"
+    bartender.add_topic(
+        inputs = ['gnome', 'drunk'],
+        response = "Ask him yourself.  I ain't your momma.",
+        required = [],
+        set_flag='asked_about_gnome'
+    )
+    bartender.add_topic(
+        inputs = ['gnome', 'drunk', 'barstool'],
+        response = "Still on about that?  He's a regular.  You leave him alone now.",
+        required = ['asked_about_gnome'],
+        set_flag='asked_about_gnome_again'
+    )
+    bartender.add_topic(
+        inputs = ['gnome', 'drunk', 'regular'],
+        response = "He's Vorlin, alright.  Go talk to him and leave me out of it.",
+        required = ['asked_about_gnome', 'asked_about_gnome_again'],
+    )
+    bartender.add_topic(
+        inputs = ['woman'],
+        response = "Don't ask about her.  She's trouble.",
+        required = [],
+        set_flag = 'asked_about_woman'
+    )
+    bartender.add_topic(
+        inputs = ['woman', 'trouble'],
+        response = "She's gotten in over her head, and she's dragging me with her.  Do yourself a favor and leave her be.",
+        required = ['asked_about_woman'],
+        set_flag = 'asked_about_woman_again'
+    )
+    gnome = NPC("Vorlin", 0)
     bar = location.Location("bar", "You stand before a long, mahogany bar that likely hasn't seen a good clean in months, if not years."
                               "\nThere is a drunk gnome sitting precariously on a stool to your left, and an orcish bartender "
                               "\nwho gives you a glare but says nothing.", ["tavern door"], bar_descriptions, [bartender, gnome])
+    state.npcs = {"bartender": bartender, "gnome": gnome}
+    for npcs in bar.npc:
+        state.npcs[npcs.name] = npcs
+    for npcs in tavern_door.npc:
+        state.npcs[npcs.name] = npcs
+
     bar.target_aliases = {
         'room': 'bar',
         'main room': 'tavern',
@@ -106,7 +143,11 @@ def intro(player, state):
                 else:
                     state.move_to(places_available[target])
             case "talk" | "speak":
-                pass
+                npc = state.normalize_target(target)
+                if npc == 'other':
+                    print('There is no one like that here to talk to.')
+                else:
+                    npc.talk(player, state)
             case "help" | "?":
                 pass
             case "quit" | "exit" | "q":

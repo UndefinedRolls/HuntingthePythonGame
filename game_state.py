@@ -6,6 +6,7 @@ class GameState:
         self.flags = set()
         self.inventory = []
         self.npcs_met = {}
+        self.npcs = {}
 
     def set_player(self, player):
         self.player = player
@@ -19,7 +20,6 @@ class GameState:
         """Send game state to dictionary"""
         return {
             "current_location": self.current_location,
-            "sub_location": self.sub_location,
             "flags": self.flags,
             "inventory": self.inventory,
             "npcs" : {
@@ -42,3 +42,14 @@ class GameState:
 
     def move_to(self, location):
         self.current_location = location
+
+    def normalize_target(self, string):
+        if not string:
+            return None
+
+        target_lower = string.lower()
+        for target, alias in self.npcs.items():
+            if target in target_lower and alias in self.current_location.npc:
+                return alias
+
+        return 'other'

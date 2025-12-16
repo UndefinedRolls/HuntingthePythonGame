@@ -24,8 +24,8 @@ class Location:
             if target in target_lower:
                 return alias
 
-        if target in self.can_look_at:
-            return target
+        if target_lower in self.can_look_at:
+            return target_lower
 
         return 'other'
     def add_npc(self, npc):

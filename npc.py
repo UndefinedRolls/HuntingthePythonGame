@@ -129,7 +129,7 @@ class NPC:
 
             response, exits = self.determine_response(question, state)
 
-            print(f"{player.name}: {response}")
+            print(f"{self.name}: {response}")
             if exits:
                 return
 
