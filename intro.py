@@ -1,7 +1,4 @@
-from pip._internal import locations
-
 import npc
-import game_state
 import location
 
 def intro(player, state):
@@ -103,7 +100,7 @@ def intro(player, state):
                     player.handle_look(state.current_location.can_look_at[normalized_target])
             case "go" | "move" | "walk":
                 if target == state.current_location.name:
-                    print("You are already there")
+                    print("You are already there.")
                 elif target not in places_available:
                     print("You can't reach there from here.")
                 else:
