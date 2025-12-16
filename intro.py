@@ -38,17 +38,53 @@ def intro(player, state):
         'guards': "\nThe guards are busy with their game, you think the one in red may be cheating.",
         'young woman': "\nThe young woman won't meet your eyes.  From the amount of ale on the table, you think she's probably spilled more than she's drunk||\nShe seems terrified, and keeps looking at the"
                        "bartender, as if for reassurance.",
+        'gnome': "\nThe gnome sways slightly in his seat, his eyes half closed.  His breath smells strongly of the drink in front of him.|\n"
+                 "You also catch the smell of rotten fish, and body odor from him.  His hair is unwashed but his clothing is expensive, and cleaner than the rest of him.",
         'other': "\nYou can't see that from here."}
     tavern_door = location.Location("tavern", "You stand in the doorway of a ramshackle tavern in a ramshackle town."
                                             "\nThe room is mostly dark, but motes of dust float on a few bars of light that comes in from the grimy windows."
                                             "\nThere is a long bar in the back of the room, stairs up to the proprietors rooms blocked by"
-                                            "a rope\n-a handful of occupied tables\n-an open archway that leads to a storage room "
+                                            "a rope\n-a handful of occupied tables\n-an open doorway that leads to a storage room "
                                             "in the back.", ["bar", "storage room", "staircase", "tables"], tavern_descriptions)
+
+    tavern_door.target_aliases = {
+        'storage room': 'storage',
+        'room': 'tavern',
+        'main room': 'tavern',
+        'bartender': 'bar',
+        'stairway': 'stairs',
+        'staircase': 'stairs',
+        'table': 'tables',
+        'card players': 'guards',
+        'young men': 'guards',
+        'patrons': 'tables',
+        'farmers': 'old men',
+        'storytellers': 'old men',
+        'woman': 'young woman',
+        'doorway': 'storage',
+        'the back': 'storage'
+    }
     bartender = npc.Bartender("Myev", 1, 2)
     gnome = npc.NPC("Vorlin", 0)
     bar = location.Location("bar", "You stand before a long, mahogany bar that likely hasn't seen a good clean in months, if not years."
                               "\nThere is a drunk gnome sitting precariously on a stool to your left, and an orcish bartender "
                               "\nwho gives you a glare but says nothing.", ["tavern door"], bar_descriptions, [bartender, gnome])
+    bar.target_aliases = {
+        'room': 'bar',
+        'main room': 'tavern',
+        'stairway': 'stairs',
+        'staircase': 'stairs',
+        'table': 'tables',
+        'card players': 'guards',
+        'young men': 'guards',
+        'patrons': 'tables',
+        'farmers': 'old men',
+        'storytellers': 'old men',
+        'woman': 'young woman',
+        'doorway': 'storage',
+        'the back': 'storage',
+        'drunk': 'gnome'
+    }
     places_available = {'bar': bar, 'tavern': tavern_door}
     state.current_location = tavern_door
     while True:
@@ -57,31 +93,14 @@ def intro(player, state):
         if not action:
             continue
 
-        if 'room' in target:
-            target = state.current_location.name
-        elif 'bar' in target:
-            target = 'bar'
-        elif 'tavern' in target:
-            target = 'tavern'
-        elif 'storage' in target:
-            target = 'storage'
-        elif 'stairs' in target:
-            target = 'stairs'
-        elif 'tables' in target:
-            target = 'tables'
-        elif 'guards' in target:
-            target = 'guards'
-        elif 'old men' in target:
-            target = 'old men'
-        elif 'young woman' in target:
-            target = 'young woman'
-        else:
-            target = 'other'
 
         match action:
             case "look" | "examine" | "l":
-
-                player.handle_look(target)
+                if not target:
+                    state.current_location.describe()
+                else:
+                    normalized_target = state.current_location.normalize_target(target)
+                    player.handle_look(state.current_location.can_look_at[normalized_target])
             case "go" | "move" | "walk":
                 if target == state.current_location.name:
                     print("You are already there")

@@ -6,6 +6,7 @@ class Location:
         self.action = []
         self.npc = npcs
         self.can_look_at = look_at
+        self.target_aliases = {}
     def describe_exits(self):
         if self.exits:
             print(f"\nFrom {self.name} you can see: {'\n'.join(self.exits)}")
@@ -14,7 +15,19 @@ class Location:
                 "\nThere are no obvious exits"
             )
 
+    def normalize_target(self, string):
+        if not string:
+            return None
 
+        target_lower = string.lower()
+        for target, alias in self.target_aliases.items():
+            if target in target_lower:
+                return alias
+
+        if target in self.can_look_at:
+            return target
+
+        return 'other'
     def add_npc(self, npc):
         self.npc[npc.name] = npc
 
