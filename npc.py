@@ -33,8 +33,7 @@ class NPC:
                 self.possessive = "THEIR"
                 self.reflective = "THEMSELVES"
 
-    def add_topic(self, inputs, response, required=None, set_flag=None, remove_flag=None):
-        topic_id = inputs[0]
+    def add_topic(self,topic_id, inputs, response, required=None, set_flag=None, remove_flag=None):
         if not isinstance(inputs, list):
             inputs = [inputs]
         if not required:
@@ -138,6 +137,23 @@ class NPC:
             "name": self.name,
             "pronouns": self.pronouns,
         }
+    def add_topic_helper(self, topic_id, keywords, response):
+        for index, text in enumerate(response):
+            new_id = f"{topic_id}_{index+1}"
+            requires = None if index==0 else requires.append(f"{topic_id}_{index}")
+            sets_flag = new_id
+            removes_flag = f"{topic_id}_{index}" if i > 0 else None
+
+            self.add_topic(
+                topic_id = new_id,
+                inputs = keywords,
+                response = text,
+                required = requires,
+                set_flag = sets_flag,
+                remove_flag = removes_flag
+            )
+
+
     @classmethod
     def load_game(cls, save_data):
         return cls(

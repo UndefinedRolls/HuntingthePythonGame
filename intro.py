@@ -64,34 +64,16 @@ def intro(player, state):
     }
     bartender = NPC("Myev", 1, used_name = "Bartender", custom_greeting="What?")
     bartender.personality = "gruff"
-    bartender.add_topic(
-        inputs = ['gnome', 'drunk'],
-        response = "Ask him yourself.  I ain't your momma.",
-        required = [],
-        set_flag='asked_about_gnome'
+    bartender.add_topic_helper(
+        keywords = ['gnome', 'drunk', 'man on barstool', 'regular', 'Vorlin'],
+        response = ["Ask him yourself.  I ain't your momma.",
+                    "Still on about that?  He's a regular.  You leave him alone now.",
+                    "He's Vorlin, alright.  Go talk to him and leave me out of it."]
     )
-    bartender.add_topic(
-        inputs = ['gnome', 'drunk', 'barstool'],
-        response = "Still on about that?  He's a regular.  You leave him alone now.",
-        required = ['asked_about_gnome'],
-        set_flag='asked_about_gnome_again'
-    )
-    bartender.add_topic(
-        inputs = ['gnome', 'drunk', 'regular'],
-        response = "He's Vorlin, alright.  Go talk to him and leave me out of it.",
-        required = ['asked_about_gnome', 'asked_about_gnome_again'],
-    )
-    bartender.add_topic(
-        inputs = ['woman'],
-        response = "Don't ask about her.  She's trouble.",
-        required = [],
-        set_flag = 'asked_about_woman'
-    )
-    bartender.add_topic(
-        inputs = ['woman', 'trouble'],
-        response = "She's gotten in over her head, and she's dragging me with her.  Do yourself a favor and leave her be.",
-        required = ['asked_about_woman'],
-        set_flag = 'asked_about_woman_again'
+    bartender.add_topic_helper(
+        keywords = ['woman', 'trouble'],
+        response = ["Don't ask about her.  She's trouble.",
+        "She's gotten in over her head, and she's dragging me with her.  Do yourself a favor and leave her be."]
     )
     gnome = NPC("Vorlin", 0)
     bar = location.Location("bar", "You stand before a long, mahogany bar that likely hasn't seen a good clean in months, if not years."
