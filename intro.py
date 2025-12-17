@@ -65,16 +65,34 @@ def intro(player, state):
     bartender = NPC("Myev", 1, used_name = "Bartender", custom_greeting="What?")
     bartender.personality = "gruff"
     bartender.add_topic_helper(
+        topic_id = 'gnome',
         keywords = ['gnome', 'drunk', 'man on barstool', 'regular', 'Vorlin'],
         response = ["Ask him yourself.  I ain't your momma.",
                     "Still on about that?  He's a regular.  You leave him alone now.",
                     "He's Vorlin, alright.  Go talk to him and leave me out of it."]
     )
     bartender.add_topic_helper(
+        topic_id = 'woman',
         keywords = ['woman', 'trouble'],
         response = ["Don't ask about her.  She's trouble.",
         "She's gotten in over her head, and she's dragging me with her.  Do yourself a favor and leave her be."]
     )
+    bartender.add_topic(
+        topic_id = 'name',
+        inputs = ['name', 'who are you', 'you are'],
+        response = "What's it to you?",
+        set_flag='name_0'
+    )
+    bartender.add_topic_helper(
+        topic_id = 'name',
+        keywords = ['name', 'who are you', 'you are'],
+        response = [
+            "What do you care?",
+            "Gods Above, it's Myev, happy now?"
+        ]
+    )
+    bartender.topics['name_1']['removes_flag'] = 'name_0'
+
     gnome = NPC("Vorlin", 0)
     bar = location.Location("bar", "You stand before a long, mahogany bar that likely hasn't seen a good clean in months, if not years."
                               "\nThere is a drunk gnome sitting precariously on a stool to your left, and an orcish bartender "

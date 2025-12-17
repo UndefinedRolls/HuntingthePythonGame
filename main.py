@@ -39,10 +39,13 @@ def parse_color(color):
     except ValueError:
         return "#000000", color
 def create_character():
-    char_name = input(f"What is you name?\n")
-    char_color, clr_txt = parse_color(input(f"What is your favorite color?\n"))
-    char_wsv = input(f"What is the wind speed velocity of a laden swallow?\n")
-
+    #char_name = input(f"What is you name?\n")
+    #char_color, clr_txt = parse_color(input(f"What is your favorite color?\n"))
+    #char_wsv = input(f"What is the wind speed velocity of a laden swallow?\n")
+    char_name = "John Doe"
+    char_color = "#FF0000"
+    clr_txt = "blue"
+    char_wsv = "african or european swallow"
     if "african or european swallow" in char_wsv.lower() or char_wsv == "":
         pass
     else:
@@ -50,7 +53,7 @@ def create_character():
         sys.exit()
 
     new_player = Player(char_name, char_color, clr_txt)
-    print(repr(new_player))
+    #print(repr(new_player))
     return new_player
 def menu(save_data):
     if save_data:
@@ -82,7 +85,8 @@ def menu(save_data):
     return input(">>")
 
 def main(save_data=None):
-    choice = menu(save_data)
+    #choice = menu(save_data)
+    choice = "1"
     match choice:
         case "1":
             print("Create your character")

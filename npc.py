@@ -33,17 +33,19 @@ class NPC:
                 self.possessive = "THEIR"
                 self.reflective = "THEMSELVES"
 
-    def add_topic(self,topic_id, inputs, response, required=None, set_flag=None, remove_flag=None):
+    def add_topic(self,topic_id, inputs, response, required=None, set_flag=None, remove_flag=None, repeatable=False):
         if not isinstance(inputs, list):
             inputs = [inputs]
         if not required:
             required = []
         self.topics[topic_id] = {
+            'topic_id': topic_id,
             'keywords': inputs,
             'response': response,
             'requires': required,
             'sets_flag': set_flag,
             'removes_flag': remove_flag,
+            'repeatable': repeatable
         }
     def _greeting(self):
         greetings = {
@@ -71,16 +73,19 @@ class NPC:
 
     def _set_default_responses(self):
         self.add_topic(
-            inputs = ['hello', 'hi', 'hey'],
+            topic_id = 'greetings',
+            inputs = ['hello', 'hi', 'hey', 'greetings'],
             response = lambda npc, text, state: self._greeting()
         )
 
         self.add_topic(
-            inputs = ['bye', 'goodbye'],
+            topic_id = 'farewell',
+            inputs = ['bye', 'goodbye', 'farewell'],
             response = lambda npc, text, state: self._farewell()
         )
 
         self.add_topic(
+            topic_id = 'name',
             inputs = ['name', 'who are you', 'you are'],
             response = lambda npc, text, state: f"I'm {self.name}",
             set_flag = "knows_name"
@@ -118,7 +123,8 @@ class NPC:
 
         if match['removes_flag']:
             self.flags.discard(match['removes_flag'])
-
+        if not match['repeatable']:
+            del self.topics[match['topic_id']]
         return response, exits
 
     def talk(self, player, state):
@@ -140,9 +146,9 @@ class NPC:
     def add_topic_helper(self, topic_id, keywords, response):
         for index, text in enumerate(response):
             new_id = f"{topic_id}_{index+1}"
-            requires = None if index==0 else requires.append(f"{topic_id}_{index}")
+            requires = None if index==0 else f"{topic_id}_{index}"
             sets_flag = new_id
-            removes_flag = f"{topic_id}_{index}" if i > 0 else None
+            removes_flag = f"{topic_id}_{index}" if index > 0 else None
 
             self.add_topic(
                 topic_id = new_id,
@@ -152,7 +158,8 @@ class NPC:
                 set_flag = sets_flag,
                 remove_flag = removes_flag
             )
-
+        last_id = f"{topic_id}_{len(response)-1}"
+        self.topics[last_id]["repeatable"] = True
 
     @classmethod
     def load_game(cls, save_data):
