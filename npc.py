@@ -123,6 +123,7 @@ class NPC:
 
         if match['removes_flag']:
             self.flags.discard(match['removes_flag'])
+
         if not match['repeatable']:
             del self.topics[match['topic_id']]
         return response, exits
@@ -144,11 +145,13 @@ class NPC:
             "pronouns": self.pronouns,
         }
     def add_topic_helper(self, topic_id, keywords, response):
+        last_id=None
         for index, text in enumerate(response):
             new_id = f"{topic_id}_{index+1}"
-            requires = None if index==0 else f"{topic_id}_{index}"
+            requires = None if index==0 else [f"{topic_id}_{index}"]
             sets_flag = new_id
             removes_flag = f"{topic_id}_{index}" if index > 0 else None
+            last_id = new_id
 
             self.add_topic(
                 topic_id = new_id,
@@ -158,8 +161,10 @@ class NPC:
                 set_flag = sets_flag,
                 remove_flag = removes_flag
             )
-        last_id = f"{topic_id}_{len(response)-1}"
+        if not last_id:
+            last_id = f"{topic_id}_0"
         self.topics[last_id]["repeatable"] = True
+        self.topics[last_id]["removes_flag"] = None
 
     @classmethod
     def load_game(cls, save_data):
