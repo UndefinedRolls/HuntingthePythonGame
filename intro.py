@@ -1,5 +1,6 @@
 from npc import NPC
 import location
+
 def create_bartender():
     bartender = NPC("Myev", 1, used_name="Bartender", custom_greeting="What?")
     bartender.personality = "gruff"
@@ -88,7 +89,11 @@ def create_bar(bartender, gnome):
         'drunk': 'gnome'
     }
     return bar
-
+def create_tables():
+    table_descriptions = {
+        'young woman': '\nThe woman keeps both hands wrapped tightly around her drink|\nHer face is mostly in shadow,'
+                       'but you can see her eyes are closed|\n'
+    }
 def create_tavern():
     tavern_descriptions = {
         'bar': "\nThe bar is long, wooden, covered in grime.|"
@@ -166,6 +171,7 @@ def intro(player, state):
     bartender = create_bartender()
     gnome = create_gnome()
     bar = create_bar(bartender, gnome)
+    tables = create_tables()
     state.npcs = {"bartender": bartender, "gnome": gnome}
     for npcs in bar.npc:
         state.npcs[npcs.name] = npcs
