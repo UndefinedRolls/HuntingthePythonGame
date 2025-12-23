@@ -150,7 +150,7 @@ def create_gnome():
     )
     gnome.add_topic(
         topic_id="killed a man",
-        inputs=["who did she kill"],
+        inputs=["who did she kill", "killed who", "killed a man"],
         response="You'll have to ask her.  Its all just rumor."
     )
     gnome.add_topic(
@@ -158,12 +158,13 @@ def create_gnome():
         inputs=["young man", "guards", "card players"],
         response="Oh, I don't know.  They're new.  Showed up today.  Seem friendly enough."
     )
+    return gnome
 def intro(player, state):
 
 
     tavern_door = create_tavern()
     bartender = create_bartender()
-    gnome = NPC("Vorlin", 0)
+    gnome = create_gnome()
     bar = create_bar(bartender, gnome)
     state.npcs = {"bartender": bartender, "gnome": gnome}
     for npcs in bar.npc:
