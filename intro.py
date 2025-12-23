@@ -30,14 +30,23 @@ def create_bartender():
             "Gods Above, it's Myev, happy now?"
         ]
     )
+    bartender.add_topic_helper(
+        topic_id="guards",
+        keywords=['young men', 'guards', 'card players'],
+        response=[
+            "Why so many questions?  Order something or get lost.",
+            "Insistent much?  They're caravan guards, showed up this morning.",
+            "Why don't you just go talk to them."
+        ]
+    )
+    bartender.add_topic(
+        topic_id="order",
+        inputs=["order", "I'd like", "I want", "give me"],
+        response="Yeah, here.  Don't throw up on my bar."
+    )
     bartender.topics['name_1']['removes_flag'] = 'name_0'
     return bartender
 def create_bar(bartender, gnome):
-    bar = location.Location("bar",
-                            "You stand before a long, mahogany bar that likely hasn't seen a good clean in months, if not years."
-                            "\nThere is a drunk gnome sitting precariously on a stool to your left, and an orcish bartender "
-                            "\nwho gives you a glare but says nothing.", ["tavern door"], bar_descriptions,
-                            [bartender, gnome])
 
     bar_descriptions = {
         'bar': "\nThe bar was once quite nice, but now is covered in a layer of alcohol, sweat and dirt that hides any of the beauty it might once have had|"
@@ -56,6 +65,11 @@ def create_bar(bartender, gnome):
         'gnome': "\nThe gnome sways slightly in his seat, his eyes half closed.  His breath smells strongly of the drink in front of him.|\n"
                  "You also catch the smell of rotten fish, and body odor from him.  His hair is unwashed but his clothing is expensive, and cleaner than the rest of him.",
         'other': "\nYou can't see that from here."}
+    bar = location.Location("bar",
+                            "You stand before a long, mahogany bar that likely hasn't seen a good clean in months, if not years."
+                            "\nThere is a drunk gnome sitting precariously on a stool to your left, and an orcish bartender "
+                            "\nwho gives you a glare but says nothing.", ["tavern door"], bar_descriptions,
+                            [bartender, gnome])
 
     bar.target_aliases = {
         'room': 'bar',
@@ -138,6 +152,11 @@ def create_gnome():
         topic_id="killed a man",
         inputs=["who did she kill"],
         response="You'll have to ask her.  Its all just rumor."
+    )
+    gnome.add_topic(
+        topic_id="guards",
+        inputs=["young man", "guards", "card players"],
+        response="Oh, I don't know.  They're new.  Showed up today.  Seem friendly enough."
     )
 def intro(player, state):
 
