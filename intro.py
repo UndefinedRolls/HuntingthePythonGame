@@ -89,11 +89,45 @@ def create_bar(bartender, gnome):
         'drunk': 'gnome'
     }
     return bar
-def create_tables():
+def create_tables(young_woman, old_men, guards):
     table_descriptions = {
         'young woman': '\nThe woman keeps both hands wrapped tightly around her drink|\nHer face is mostly in shadow,'
-                       'but you can see her eyes are closed|\n'
+                       'but you can see her eyes are closed|\nYou see a small black bag beneath the table tucked'
+                       ' between her feet',
+        'bag': "\nBetween the young woman's feet sits a small black bag.  Made of leather, the seams are cracked and the "
+               "metal handle tarnished||\nThis wear was done purposefully, and artfully; to the casual observer the bad is"
+               "old and worn, and not the new, expensive bag it really is.",
+        'guards': '\nFive young men sit playing at cards.  Two wear caravan guard coats, the others have theirs hanging on the back of their chairs'
+                  '|\nThey all appear to be in their early to mid twenties.  The dealer has long black hair pulled back into '
+                  'a tail and dark eyes.  To his right sits a man with close shaved blond hair and deep green eyes.  His nose is crooked,'
+                  'as if broken one too many times.  To the left of the dealer is the youngest of the group, a brown haired '
+                  'man wearing spectacles wearing his coat with the pride of one who newly earned it.|\nThe other two have their back to the door.  '
+                  'The one with his coat one has long brown hair in many braids, he is losing quite spectacularly.  The other'
+                  'is the neatest of the bunch, his dark hair greased back on a high forehead.|\nThe youngest man appears to be'
+                  'cheating at the game',
+        'old men': 'The two old men smile at you and wave you over.  They are well into their cups.'
     }
+    tables = location.Location("table", "The tables hold a handful of patrons, a young man keeping to herself in the back,"
+                                      " a group of young man playing at cards, and two older gentlemen sharing stories.  The tables"
+                                      " are old, a little dirty, and a few have filthy words carved into them.", table_descriptions, [young_woman, old_men, guards])
+    tables.target_aliases = {
+        'room': 'tables',
+        'main room': 'tavern',
+        'stairway': 'stairs',
+        'staircase': 'stairs',
+        'table': 'tables',
+        'card players': 'guards',
+        'young men': 'guards',
+        'patrons': 'tables',
+        'farmers': 'old men',
+        'storytellers': 'old men',
+        'woman': 'young woman',
+        'doorway': 'storage',
+        'the back': 'storage',
+        'drunk': 'gnome'g
+    }
+    return tables
+
 def create_tavern():
     tavern_descriptions = {
         'bar': "\nThe bar is long, wooden, covered in grime.|"
@@ -164,6 +198,10 @@ def create_gnome():
         response="Oh, I don't know.  They're new.  Showed up today.  Seem friendly enough."
     )
     return gnome
+def create_woman():
+    woman = NPC("Maya", 1)
+    woman.personality = "scared"
+
 def intro(player, state):
 
 
@@ -171,6 +209,7 @@ def intro(player, state):
     bartender = create_bartender()
     gnome = create_gnome()
     bar = create_bar(bartender, gnome)
+    young_woman = create_woman()
     tables = create_tables()
     state.npcs = {"bartender": bartender, "gnome": gnome}
     for npcs in bar.npc:

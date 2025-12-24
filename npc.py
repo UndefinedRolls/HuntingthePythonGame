@@ -51,7 +51,8 @@ class NPC:
         greetings = {
             'neutral': f"Hello. Do you need something?",
             'friendly': f"Hello there!",
-            'gruff': f"Yes?  What?"
+            'gruff': f"Yes?  What?",
+            'scared': f"What?  Who...who are you?"
         }
         if self.custom_greeting:
             return self.custom_greeting
@@ -63,7 +64,8 @@ class NPC:
         farewells= {
             'neutral': 'Bye, then',
             'friendly': 'Goodbye!',
-            'gruff': 'Whatever.'
+            'gruff': 'Whatever.',
+            'scared': 'B-bye...'
         }
         if self.custom_farewell:
             return self.custom_farewell
